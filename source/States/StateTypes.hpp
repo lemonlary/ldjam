@@ -5,7 +5,7 @@ namespace ld
 {
 	namespace States
 	{
-		enum ID
+		enum ID : xy::StateID
 		{
 			Menu = 0,
 			Play, 

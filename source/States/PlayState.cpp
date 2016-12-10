@@ -2,60 +2,77 @@
 
 void ld::PlayState::buildScene()
 {
-	m_textureResource.setFallbackColour(sf::Color::Magenta);
-
-	if (!m_tilemap.load("data/maps/testMap.tmx"))
+	// World setup
 	{
-		xy::Logger::log("Cannot load map, cannot open", xy::Logger::Type::Error);
-	}
-		
-	auto entity = xy::Entity::create(m_messageBus);
-	const auto& layers = m_tilemap.getLayers();
-
-	for (const auto& l : layers)
-	{
-		if (l->getType() == xy::tmx::Layer::Type::Object)
-		{
-			xy::Logger::log("found object layer - attempting to create physics components", xy::Logger::Type::Info);
-			auto rb = m_tilemap.createRigidBody(m_messageBus, *l);
-			entity->addComponent(rb);
-
-			continue;
-		}
-
-		auto drawable = m_tilemap.getDrawable(m_messageBus, *l, m_textureResource, m_shaderResource);
-		if (drawable)
-		{
-			xy::Logger::log("created layer drawable, adding to scene...");
-			entity->addComponent(drawable);
-		}
+		m_scene.setView(this->getContext().defaultView);
+		m_shaderResource.preload(xy::Shader::Tilemap, xy::Shader::tmx::vertex, xy::Shader::tmx::fragment);
+		// We dont have gravity in top-down 
+		m_physWorld.setGravity(sf::Vector2f(0, 0));
 	}
 
-	m_scene.addEntity(entity, xy::Scene::Layer::BackFront);
+	// Map setup
+	{
+		m_textureResource.setFallbackColour(sf::Color::Magenta);
 
-	auto camera = xy::Component::create<xy::Camera>(m_messageBus, getContext().defaultView);
-	auto body = xy::Component::create<xy::Physics::RigidBody>(m_messageBus, xy::Physics::BodyType::Dynamic);
-	auto drawable = xy::Component::create<xy::SfDrawableComponent<sf::RectangleShape>>(m_messageBus);
-	auto collShape = xy::Physics::CollisionRectangleShape(sf::Vector2f(32,32));
+		if (!m_tilemap.load("data/maps/testMap.tmx"))
+		{
+			xy::Logger::log("Cannot load map, cannot open", xy::Logger::Type::Error);
+		}
 
-	drawable->getDrawable().setSize((sf::Vector2f)m_textureResource.get("data/textures/player.png").getSize());
-	drawable->getDrawable().setTexture(&m_textureResource.get("data/textures/player.png"), true);
-	// start facing (up)
-	drawable->getDrawable().setTextureRect(sf::IntRect(0, 0, 32, 32));
+		auto entity = xy::Entity::create(m_messageBus);
+		const auto& layers = m_tilemap.getLayers();
 
-	body->addCollisionShape(collShape);
-	body->setGravityScale(0);
-	body->setAngularDamping(0);
+		for (const auto& l : layers)
+		{
+			if (l->getType() == xy::tmx::Layer::Type::Object)
+			{
+				xy::Logger::log("found object layer - attempting to create physics components", xy::Logger::Type::Info);
+				auto rb = m_tilemap.createRigidBody(m_messageBus, *l);
+				entity->addComponent(rb);
+
+				continue;
+			}
+
+			auto drawable = m_tilemap.getDrawable(m_messageBus, *l, m_textureResource, m_shaderResource);
+			if (drawable)
+			{
+				xy::Logger::log("created layer drawable, adding to scene...");
+				entity->addComponent(drawable);
+			}
+		}
+
+		m_scene.addEntity(entity, xy::Scene::Layer::BackFront);
+	}
 	
-	auto player = xy::Entity::create(m_messageBus);
-	auto cameraPtr = player->addComponent(camera);
-	player->addComponent(body);
-	player->addComponent(drawable);
-	player->addComponent(xy::Component::create<PlayerController>(m_messageBus));
-	player->setPosition(0, 0);
+	// Player setup
+	{
+		auto camera = xy::Component::create<xy::Camera>(m_messageBus, getContext().defaultView);
+		auto body = xy::Component::create<xy::Physics::RigidBody>(m_messageBus, xy::Physics::BodyType::Dynamic);
+		auto collShape = xy::Physics::CollisionRectangleShape(sf::Vector2f(32 / 2, 32 / 2));
+		auto animation = xy::Component::create<xy::AnimatedDrawable>(m_messageBus, m_textureResource.get("data/textures/game/player.png"));
 
-	m_scene.addEntity(player, xy::Scene::Layer::FrontFront);
-	m_scene.setActiveCamera(cameraPtr);
+		animation->setFrameSize(sf::Vector2i(32, 32));
+		animation->loadAnimationData("data/textures/game/playerAnimation.xya");
+		animation->play(sf::Int16(0), sf::Int16(-1), sf::Int16(0));
+		animation->setLooped(true);
+
+		body->addCollisionShape(collShape);
+		body->setGravityScale(0);
+		body->setAngularDamping(0);
+
+		camera->setZoom(3.f);
+		camera->lockTransform(xy::Camera::TransformLock::Rotation, true);
+
+		auto player = xy::Entity::create(m_messageBus);
+		auto cameraPtr = player->addComponent(camera);
+		player->addComponent(body);
+		player->addComponent(animation);
+		player->addComponent(xy::Component::create<PlayerController>(m_messageBus));
+		player->setPosition(0, 0);
+
+		m_scene.addEntity(player, xy::Scene::Layer::FrontFront);
+		m_scene.setActiveCamera(cameraPtr);
+	}
 }
 
 ld::PlayState::PlayState(xy::StateStack & stack, Context context) :
@@ -67,19 +84,14 @@ ld::PlayState::PlayState(xy::StateStack & stack, Context context) :
 {
 	launchLoadingScreen();
 
+	// Move to buildGUI()
 	m_cursorSprite.setTexture(m_textureResource.get("data/textures/ui/cursor.png"));
 	m_cursorSprite.setPosition(context.renderWindow.mapPixelToCoords(sf::Mouse::getPosition(context.renderWindow)));
-	m_cursorSprite.setScale(0.1f, 0.1f);
-
-	// buildGui();
-
+	m_cursorSprite.setScale(0.8f, 0.8f);
 	xy::App::setMouseCursorVisible(false);
 
-	m_scene.setView(context.defaultView);
-	m_shaderResource.preload(xy::Shader::Tilemap, xy::Shader::tmx::vertex, xy::Shader::tmx::fragment);
-	// We dont have gravity in top-down 
-	m_physWorld.setGravity(sf::Vector2f(0, 0));
-
+	// buildGui();
+	
 	buildScene();
 
 	quitLoadingScreen();
@@ -100,7 +112,6 @@ void ld::PlayState::draw()
 	renderWindow.draw(m_scene);
 	renderWindow.draw(m_uiContainer);
 
-	//renderWindow.setView(m_scene.getView());
 	auto mousePos = renderWindow.mapPixelToCoords(sf::Mouse::getPosition(renderWindow));
 	m_cursorSprite.setPosition(mousePos);
 	renderWindow.draw(m_cursorSprite);

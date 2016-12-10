@@ -8,3 +8,9 @@
 
 10/12/16-13:36:17: ERROR: Failed opening file input.kbd for reading
 
+10/12/16-23:21:55: ERROR: Assertion failed in c:\users\konrad\desktop\xygine-master\xygine\src\components\componentanimateddrawable.cpp, function `xy::AnimatedDrawable::play`, line 208: frame value invalid
+
+10/12/16-23:23:32: ERROR: Assertion failed in c:\users\konrad\desktop\xygine-master\xygine\src\components\componentanimateddrawable.cpp, function `xy::AnimatedDrawable::play`, line 208: frame value invalid
+
+10/12/16-23:24:03: ERROR: Assertion failed in c:\users\konrad\desktop\xygine-master\xygine\src\components\componentanimateddrawable.cpp, function `xy::AnimatedDrawable::play`, line 208: frame value invalid
+

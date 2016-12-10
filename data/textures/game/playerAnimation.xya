@@ -1,0 +1,15 @@
+{
+  "Animations": [
+    {
+      "Start": 0,
+      "End": 7,
+      "Loop": true,
+      "Name": "playeranimation"
+    }
+  ],
+  "FrameCount": 8,
+  "FrameSize": "32, 32",
+  "FrameRate": 12.0,
+  "Texture": "player.png",
+  "NormalMap": "none.png"
+}

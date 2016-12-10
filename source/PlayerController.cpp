@@ -2,7 +2,7 @@
 
 ld::PlayerController::PlayerController(xy::MessageBus & messageBus) : xy::Component(messageBus, this)
 {
-	m_speed = 50.f;
+	m_speed = 5000.f;
 	m_buttons = MovementButtons();
 	m_body = nullptr;
 }
@@ -36,7 +36,7 @@ void ld::PlayerController::entityUpdate(xy::Entity & et, float dt)
 	if (sf::Keyboard::isKeyPressed(m_buttons.right))
 		move.x = m_speed;
 
-	m_body->setLinearVelocity(move);
+	m_body->setLinearVelocity(move * dt);
 }
 
 void ld::PlayerController::setButtons(MovementButtons buttons)

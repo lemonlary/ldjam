@@ -5,7 +5,6 @@ ld::Game::Game() :
 	m_stateStack({getRenderWindow(), *this})
 {
 	this->getRenderWindow().setTitle("Mother's Room");
-	this->getRenderWindow().setSize(sf::Vector2u(1280, 720));
 }
 
 void ld::Game::handleEvent(const sf::Event & ev)
@@ -17,19 +16,19 @@ void ld::Game::handleMessage(const xy::Message & msg)
 {
 	switch (msg.id)
 	{
-	case xy::Message::Type::UIMessage:
-	{
-		auto& msgData = msg.getData<xy::Message::UIEvent>();
-		switch (msgData.type)
+		case xy::Message::Type::UIMessage:
 		{
-		case xy::Message::UIEvent::ResizedWindow:
-			m_stateStack.updateView();
+			auto& msgData = msg.getData<xy::Message::UIEvent>();
+			switch (msgData.type)
+			{
+			case xy::Message::UIEvent::ResizedWindow:
+				m_stateStack.updateView();
+				break;
+			default: break;
+			}
 			break;
-		default: break;
 		}
-		break;
-	}
-	default: break;
+		default: break;
 	}
 
 	m_stateStack.handleMessage(msg);
@@ -58,7 +57,7 @@ void ld::Game::initialise()
 	registerStates();
 	// register main menu here
 
-	//getRenderWindow().setKeyRepeatEnabled(false);
+	getRenderWindow().setKeyRepeatEnabled(false);
 
 	if (!xy::Input::load())
 		xy::Input::save();

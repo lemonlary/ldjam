@@ -23,6 +23,7 @@ namespace ld
 		}
 	};
 
+
 	class PlayerController final :
 		public xy::Component
 	{

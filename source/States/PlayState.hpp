@@ -14,6 +14,7 @@
 #include <xygine/physics/RigidBody.hpp>
 #include <xygine/physics/CollisionRectangleShape.hpp>
 #include <xygine/components/TileMapLayer.hpp>
+#include <xygine/components/AnimatedDrawable.hpp>
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Mouse.hpp>
