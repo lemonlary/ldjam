@@ -14,6 +14,15 @@ void ld::PlayState::buildScene()
 
 	for (const auto& l : layers)
 	{
+		if (l->getType() == xy::tmx::Layer::Type::Object)
+		{
+			xy::Logger::log("found object layer - attempting to create physics components", xy::Logger::Type::Info);
+			auto rb = m_tilemap.createRigidBody(m_messageBus, *l);
+			entity->addComponent(rb);
+
+			continue;
+		}
+
 		auto drawable = m_tilemap.getDrawable(m_messageBus, *l, m_textureResource, m_shaderResource);
 		if (drawable)
 		{
@@ -35,11 +44,14 @@ void ld::PlayState::buildScene()
 	drawable->getDrawable().setTextureRect(sf::IntRect(0, 0, 32, 32));
 
 	body->addCollisionShape(collShape);
+	body->setGravityScale(0);
+	body->setAngularDamping(0);
 	
 	auto player = xy::Entity::create(m_messageBus);
 	auto cameraPtr = player->addComponent(camera);
 	player->addComponent(body);
 	player->addComponent(drawable);
+	player->addComponent(xy::Component::create<PlayerController>(m_messageBus));
 	player->setPosition(0, 0);
 
 	m_scene.addEntity(player, xy::Scene::Layer::FrontFront);
@@ -88,8 +100,9 @@ void ld::PlayState::draw()
 	renderWindow.draw(m_scene);
 	renderWindow.draw(m_uiContainer);
 
-	renderWindow.setView(m_scene.getView());
-	
+	//renderWindow.setView(m_scene.getView());
+	auto mousePos = renderWindow.mapPixelToCoords(sf::Mouse::getPosition(renderWindow));
+	m_cursorSprite.setPosition(mousePos);
 	renderWindow.draw(m_cursorSprite);
 }
 
@@ -100,6 +113,7 @@ bool ld::PlayState::handleEvent(const sf::Event & ev)
 	m_cursorSprite.setPosition(mousePos);
 
 	m_uiContainer.handleEvent(ev, mousePos);
+
 	return false;
 }
 

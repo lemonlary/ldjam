@@ -150,10 +150,12 @@
   <ItemGroup>
     <ClCompile Include="source\Game.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\PlayerController.cpp" />
     <ClCompile Include="source\States\PlayState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Game.hpp" />
+    <ClInclude Include="source\PlayerController.hpp" />
     <ClInclude Include="source\States\PlayState.hpp" />
     <ClInclude Include="source\States\StateTypes.hpp" />
   </ItemGroup>

@@ -58,7 +58,7 @@ void ld::Game::initialise()
 	registerStates();
 	// register main menu here
 
-	getRenderWindow().setKeyRepeatEnabled(false);
+	//getRenderWindow().setKeyRepeatEnabled(false);
 
 	if (!xy::Input::load())
 		xy::Input::save();

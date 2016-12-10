@@ -20,6 +20,7 @@
 #include <SFML/Window/Keyboard.hpp>
 
 #include "StateTypes.hpp"
+#include "../PlayerController.hpp"
 
 namespace ld
 {
