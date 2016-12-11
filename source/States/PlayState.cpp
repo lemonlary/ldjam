@@ -11,6 +11,7 @@ void ld::PlayState::buildScene()
 	}
 
 	// Map setup
+	// To-Do, loading closet position etc
 	{
 		m_textureResource.setFallbackColour(sf::Color::Magenta);
 
@@ -116,6 +117,7 @@ void ld::PlayState::draw()
 	auto mousePos = renderWindow.mapPixelToCoords(sf::Mouse::getPosition(renderWindow));
 	m_cursorSprite.setPosition(mousePos);
 	renderWindow.draw(m_cursorSprite);
+	renderWindow.draw(m_physWorld);
 }
 
 bool ld::PlayState::handleEvent(const sf::Event & ev)
