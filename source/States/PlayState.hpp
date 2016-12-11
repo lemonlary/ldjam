@@ -40,6 +40,7 @@ namespace ld
 		bool handleEvent(const sf::Event&) override;
 		void handleMessage(const xy::Message&) override;
 		xy::StateID stateID() const override;
+		void updateLoadingScreen(float, sf::RenderWindow&) override;
 
 	private:
 		xy::MessageBus& m_messageBus;

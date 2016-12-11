@@ -47,6 +47,8 @@ void ld::PlayerController::entityUpdate(xy::Entity & et, float dt)
 	}
 
 	m_body->setLinearVelocity(move * dt);
+
+	// Saving rotation state(angle) hack
 	static float rotation = 0.0f;
 	if (move.x == 0 && move.y == 0)
 	{

@@ -138,3 +138,10 @@ xy::StateID ld::PlayState::stateID() const
 {
 	return ld::States::ID::Play;
 }
+
+void ld::PlayState::updateLoadingScreen(float dt, sf::RenderWindow& rw)
+{
+	static sf::Sprite s (m_textureResource.get("data/textures/ui/loadingScreen.png"));
+	s.setScale(1.2, 1);
+	rw.draw(s);
+}
