@@ -14,7 +14,7 @@ void ld::PlayState::buildScene()
 	{
 		m_textureResource.setFallbackColour(sf::Color::Magenta);
 
-		if (!m_tilemap.load("data/maps/testMap.tmx"))
+		if (!m_tilemap.load("data/maps/Room1.tmx"))
 		{
 			xy::Logger::log("Cannot load map, cannot open", xy::Logger::Type::Error);
 		}
@@ -48,10 +48,11 @@ void ld::PlayState::buildScene()
 	{
 		auto camera = xy::Component::create<xy::Camera>(m_messageBus, getContext().defaultView);
 		auto body = xy::Component::create<xy::Physics::RigidBody>(m_messageBus, xy::Physics::BodyType::Dynamic);
-		auto collShape = xy::Physics::CollisionRectangleShape(sf::Vector2f(32 / 2, 32 / 2));
+		auto collShape = xy::Physics::CollisionRectangleShape(sf::Vector2f(32, 32), sf::Vector2f(-16,-16));
 		auto animation = xy::Component::create<xy::AnimatedDrawable>(m_messageBus, m_textureResource.get("data/textures/game/player.png"));
 
 		animation->setFrameSize(sf::Vector2i(32, 32));
+		animation->setOrigin(16, 16);
 		animation->loadAnimationData("data/textures/game/playerAnimation.xya");
 		animation->play(sf::Int16(0), sf::Int16(-1), sf::Int16(0));
 		animation->setLooped(true);
@@ -63,12 +64,13 @@ void ld::PlayState::buildScene()
 		camera->setZoom(3.f);
 		camera->lockTransform(xy::Camera::TransformLock::Rotation, true);
 
+
 		auto player = xy::Entity::create(m_messageBus);
 		auto cameraPtr = player->addComponent(camera);
+		player->setWorldPosition(sf::Vector2f(148, 148));
 		player->addComponent(body);
 		player->addComponent(animation);
 		player->addComponent(xy::Component::create<PlayerController>(m_messageBus));
-		player->setPosition(0, 0);
 
 		m_scene.addEntity(player, xy::Scene::Layer::FrontFront);
 		m_scene.setActiveCamera(cameraPtr);
@@ -108,7 +110,6 @@ bool ld::PlayState::update(float dt)
 void ld::PlayState::draw()
 {
 	auto& renderWindow = getContext().renderWindow;
-
 	renderWindow.draw(m_scene);
 	renderWindow.draw(m_uiContainer);
 

@@ -3,6 +3,9 @@
 #include <xygine/components/Component.hpp>
 #include <xygine/Entity.hpp>
 #include <xygine/physics/RigidBody.hpp>
+#include <xygine/components/AnimatedDrawable.hpp>
+#include <xygine/util/Const.hpp>
+
 #include <SFML/Window/Keyboard.hpp>
 
 namespace ld

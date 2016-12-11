@@ -45,7 +45,7 @@ namespace xy
             static inline void centreOrigin(T& transformable)
             {
                 static_assert(std::is_base_of<sf::Transformable, T>::value, "only transformable type allowed");
-                sf::FloatRect bounds = transformable.getLocalBounds();
+				sf::FloatRect bounds = transformable.getLocalBounds();
                 transformable.setOrigin(std::floor(bounds.width / 2.f), std::floor(bounds.height / 2.f));
 
                 //sf::text is, unfortunately, a special case
