@@ -4,6 +4,7 @@
 #include <xygine/KeyBinds.hpp>
 
 #include "States/PlayState.hpp"
+#include "States/MenuState.hpp"
 
 namespace ld
 {

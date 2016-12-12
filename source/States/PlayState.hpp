@@ -6,6 +6,8 @@
 #include <xygine/App.hpp>
 #include <xygine/physics/World.hpp>
 #include <xygine/tilemap/Map.hpp>
+#include <xygine/tilemap/Object.hpp>
+#include <xygine/tilemap/ObjectGroup.hpp>
 #include <xygine/Scene.hpp>
 #include <xygine/ShaderResource.hpp>
 
@@ -22,6 +24,7 @@
 
 #include "StateTypes.hpp"
 #include "../PlayerController.hpp"
+#include "../RecognizeComponent.hpp"
 
 namespace ld
 {

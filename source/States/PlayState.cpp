@@ -10,6 +10,8 @@ void ld::PlayState::buildScene()
 		m_physWorld.setGravity(sf::Vector2f(0, 0));
 	}
 
+	sf::Vector2f playerPositon(0, 0);
+
 	// Map setup
 	// To-Do, loading closet position etc
 	{
@@ -21,13 +23,50 @@ void ld::PlayState::buildScene()
 		}
 
 		auto entity = xy::Entity::create(m_messageBus);
+		auto closet = xy::Entity::create(m_messageBus);
 		const auto& layers = m_tilemap.getLayers();
 
 		for (const auto& l : layers)
 		{
-			if (l->getType() == xy::tmx::Layer::Type::Object)
+			if (l->getName() == "PlayerSpawn" && l->getType() == xy::tmx::Layer::Type::Object)
 			{
-				xy::Logger::log("found object layer - attempting to create physics components", xy::Logger::Type::Info);
+				xy::Logger::log("found PlayerSpawn object, seting position", xy::Logger::Type::Info);
+				const auto* objectLayer = dynamic_cast<const xy::tmx::ObjectGroup*>(&*l);
+				playerPositon = objectLayer->getObjects()[0].getPosition();
+				
+				continue;
+			}
+
+			if (l->getName() == "Closet" && l->getType() == xy::tmx::Layer::Type::Object)
+			{
+				xy::Logger::log("found Closet object, setting position", xy::Logger::Type::Info);
+				
+				auto rb = m_tilemap.createRigidBody(m_messageBus, *l);
+
+
+				closet->addComponent(rb);
+				closet->addComponent(xy::Component::create<Recognize>(m_messageBus, RecognizeID::Closet));
+
+				continue;
+			}
+
+			if (l->getName() == "ClosetSensor" && l->getType() == xy::tmx::Layer::Type::Object)
+			{
+				xy::Logger::log("found Closet SENSOR object, setting position", xy::Logger::Type::Info);
+				
+				auto sensor = m_tilemap.createRigidBody(m_messageBus, *l);
+				sensor->setName("CLOSET_SENSOR");
+				for (auto& cs : sensor->getCollisionShapes())
+					cs->setIsSensor(true);
+				closet->addComponent(sensor);
+				
+				continue;
+			}
+
+
+			if (l->getName() == "WallCollider" && l->getType() == xy::tmx::Layer::Type::Object)
+			{
+				xy::Logger::log("found WallCollider, updating colliders", xy::Logger::Type::Info);
 				auto rb = m_tilemap.createRigidBody(m_messageBus, *l);
 				entity->addComponent(rb);
 
@@ -68,10 +107,11 @@ void ld::PlayState::buildScene()
 
 		auto player = xy::Entity::create(m_messageBus);
 		auto cameraPtr = player->addComponent(camera);
-		player->setWorldPosition(sf::Vector2f(148, 148));
+		player->setWorldPosition(playerPositon);
 		player->addComponent(body);
 		player->addComponent(animation);
 		player->addComponent(xy::Component::create<PlayerController>(m_messageBus));
+		player->addComponent(xy::Component::create<Recognize>(m_messageBus, RecognizeID::Player));
 
 		m_scene.addEntity(player, xy::Scene::Layer::FrontFront);
 		m_scene.setActiveCamera(cameraPtr);
