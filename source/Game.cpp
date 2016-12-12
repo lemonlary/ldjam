@@ -37,7 +37,8 @@ void ld::Game::handleMessage(const xy::Message & msg)
 void ld::Game::registerStates()
 {
 	m_stateStack.registerState<PlayState>(States::ID::Play);
-	m_stateStack.pushState(States::ID::Play);
+	m_stateStack.registerState<MenuState>(States::ID::Menu);
+	m_stateStack.pushState(States::ID::Menu);
 
 	// to-do
 }
