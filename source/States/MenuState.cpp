@@ -58,6 +58,11 @@ void ld::MenuState::handleMessage(const xy::Message& msg)
 
 }
 
+xy::StateID ld::MenuState::stateID() const
+{
+	return ld::States::Menu;
+}
+
 void ld::MenuState::buildMenu()
 {
 	auto button = std::make_shared<xy::UI::Button>(m_font, m_textureResource.get("data/textures/ui/btnPlay.png"));

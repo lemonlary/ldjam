@@ -28,10 +28,7 @@ namespace ld
 		void draw() override;
 		bool handleEvent(const sf::Event&) override;
 		void handleMessage(const xy::Message&) override;
-		xy::StateID stateID() const override
-		{
-			return States::ID::Menu;
-		}
+		xy::StateID stateID() const override;
 	private:
 		xy::MessageBus& m_messageBus;
 		xy::UI::Container m_uiContainer;
