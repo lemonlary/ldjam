@@ -19,7 +19,7 @@ namespace ld
 		~Recognize() = default;
 
 		Component::Type type() const;
-		RecognizeID getRecognize() const;
+		RecognizeID getRecognizeID() const;
 
 		void entityUpdate(xy::Entity&, float) override;
 		

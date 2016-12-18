@@ -10,7 +10,7 @@ xy::Component::Type ld::Recognize::type() const
 	return Component::Type::Script;
 }
 
-ld::RecognizeID ld::Recognize::getRecognize() const
+ld::RecognizeID ld::Recognize::getRecognizeID() const
 {
 	return m_type;
 }
